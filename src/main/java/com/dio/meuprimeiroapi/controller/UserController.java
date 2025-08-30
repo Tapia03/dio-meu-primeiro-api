@@ -1,20 +1,20 @@
 package com.dio.meuprimeiroapi.controller;
 
 import com.dio.meuprimeiroapi.model.User;
-import com.dio.meuprimeiroapi.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 public class UserController {
 
-    @Autowired
-    private UserRepository userRepository;
-
     @GetMapping("/users")
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<User> getUsers() {
+        List<User> users = new ArrayList<>();
+        users.add(new User(1L, "Rodrigo"));
+        users.add(new User(2L, "Maria"));
+        return users;
     }
 }
