@@ -1,29 +1,27 @@
 # Etapa 1: Build
-FROM eclipse-temurin:17-jdk as build
+FROM openjdk:17-jdk-slim AS build
 
-# Definindo diretório de trabalho
+# Diretório de trabalho
 WORKDIR /app
 
-# Copiando arquivos do projeto para dentro do container
-COPY . /app
+# Copia arquivos do projeto
+COPY . .
 
-# Garantindo que o mvnw tenha permissão de execução
+# Torna o mvnw executável e builda o projeto
 RUN chmod +x mvnw
-
-# Build do projeto com Maven Wrapper
 RUN ./mvnw clean package -DskipTests
 
 # Etapa 2: Criar imagem final
-FROM eclipse-temurin:17-jdk
+FROM openjdk:17-jdk-slim
 
-# Diretório da aplicação
+# Diretório de trabalho
 WORKDIR /app
 
-# Copiando o jar gerado na etapa de build
+# Copia o JAR do build
 COPY --from=build /app/target/*.jar app.jar
 
-# Porta que o Spring Boot irá expor
+# Porta que a aplicação irá expor
 EXPOSE 8080
 
 # Comando para rodar a aplicação
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java","-jar","app.jar"]
