@@ -1,4 +1,4 @@
-package meu.primeiro.api;
+package com.dio.meuprimeiroapi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
