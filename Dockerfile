@@ -1,20 +1,20 @@
-# Use uma imagem base do Java
+# Imagem base com Java 17
 FROM eclipse-temurin:17-jdk-alpine
 
 # Diretório da aplicação dentro do container
 WORKDIR /app
 
-# Copia todos os arquivos do projeto para o container
-COPY . /app
+# Copia todos os arquivos para o container
+COPY . .
 
-# Garante que o mvnw seja executável
-RUN chmod +x mvnw
+# Torna o mvnw executável dentro do container
+RUN ["chmod", "+x", "mvnw"]
 
-# Build do projeto
+# Build do projeto, ignorando testes
 RUN ./mvnw clean package -DskipTests
 
-# Expõe a porta que o Spring Boot vai rodar
+# Expõe a porta do Spring Boot
 EXPOSE 8080
 
-# Comando para rodar a aplicação
+# Comando para iniciar a aplicação
 CMD ["java", "-jar", "target/dio-meu-primeiro-api-0.0.1-SNAPSHOT.jar"]
