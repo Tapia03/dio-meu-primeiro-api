@@ -1,4 +1,4 @@
-package com.dio.meu_primeiro_api;
+package meu.primeiro.api.meu_primeiro_api;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
