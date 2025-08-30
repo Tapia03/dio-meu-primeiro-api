@@ -1,22 +1,13 @@
-# Etapa 1: Build
-FROM openjdk:21-jdk-slim AS build
-
+# Etapa de build
+FROM eclipse-temurin:21-jdk-alpine AS build
 WORKDIR /app
-
-RUN apt-get update && apt-get install -y git curl unzip && rm -rf /var/lib/apt/lists/*
-
 COPY . .
-
 RUN chmod +x mvnw
 RUN ./mvnw clean package -DskipTests
 
-# Etapa 2: Imagem final
-FROM openjdk:21-jdk-slim
-
+# Etapa final
+FROM eclipse-temurin:21-jdk-alpine
 WORKDIR /app
-
-COPY --from=build /app/target/*.jar app.jar
-
+COPY --from=build /app/target/dio-meu-primeiro-api-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8080
-
-ENTRYPOINT ["java","-jar","app.jar"]
+CMD ["java", "-jar", "app.jar"]
