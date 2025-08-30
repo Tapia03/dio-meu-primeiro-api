@@ -1,20 +1,29 @@
-# Imagem base com Java 17
-FROM eclipse-temurin:17-jdk-alpine
+# Etapa 1: Build
+FROM eclipse-temurin:17-jdk as build
 
-# Diretório da aplicação dentro do container
+# Definindo diretório de trabalho
 WORKDIR /app
 
-# Copia todos os arquivos para o container
-COPY . .
+# Copiando arquivos do projeto para dentro do container
+COPY . /app
 
-# Torna o mvnw executável dentro do container
-RUN ["chmod", "+x", "mvnw"]
+# Garantindo que o mvnw tenha permissão de execução
+RUN chmod +x mvnw
 
-# Build do projeto, ignorando testes
+# Build do projeto com Maven Wrapper
 RUN ./mvnw clean package -DskipTests
 
-# Expõe a porta do Spring Boot
+# Etapa 2: Criar imagem final
+FROM eclipse-temurin:17-jdk
+
+# Diretório da aplicação
+WORKDIR /app
+
+# Copiando o jar gerado na etapa de build
+COPY --from=build /app/target/*.jar app.jar
+
+# Porta que o Spring Boot irá expor
 EXPOSE 8080
 
-# Comando para iniciar a aplicação
-CMD ["java", "-jar", "target/dio-meu-primeiro-api-0.0.1-SNAPSHOT.jar"]
+# Comando para rodar a aplicação
+ENTRYPOINT ["java", "-jar", "app.jar"]
