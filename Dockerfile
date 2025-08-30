@@ -1,32 +1,30 @@
-# Etapa 1: Build do projeto
+# Etapa 1: build do projeto
 FROM eclipse-temurin:21-jdk AS build
 
-# Define o diretório de trabalho
 WORKDIR /app
 
-# Copia os arquivos do Maven Wrapper e configura permissões
+# Copia Maven Wrapper e dá permissão de execução
 COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
-
 RUN chmod +x mvnw
 
 # Copia o código fonte
 COPY src src
 
-# Build do projeto, pulando os testes para acelerar
+# Build do projeto, gerando o JAR
 RUN ./mvnw clean package -DskipTests
 
-# Etapa 2: Imagem final para rodar a aplicação
+# Etapa 2: imagem final
 FROM eclipse-temurin:21-jdk
 
 WORKDIR /app
 
-# Copia o JAR gerado na etapa de build
+# Copia apenas o JAR gerado na etapa de build
 COPY --from=build /app/target/dio-meu-primeiro-api-0.0.1-SNAPSHOT.jar dio-meu-primeiro-api-0.0.1-SNAPSHOT.jar
 
-# Porta que a aplicação irá expor
+# Porta da aplicação
 EXPOSE 8080
 
-# Comando para iniciar a aplicação
+# Comando para rodar a aplicação
 CMD ["java", "-jar", "dio-meu-primeiro-api-0.0.1-SNAPSHOT.jar"]
