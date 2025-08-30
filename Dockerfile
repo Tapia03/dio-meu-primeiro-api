@@ -1,37 +1,33 @@
-# ===============================
 # Etapa de build
-# ===============================
 FROM eclipse-temurin:21-jdk AS build
 
-# Copia arquivos do Maven Wrapper
-COPY .mvn .mvn
-COPY mvnw .
-
-# Define o diretório de trabalho
+# Diretório da aplicação dentro do container
 WORKDIR /app
 
-# Copia pom.xml e código fonte
-COPY pom.xml .
-COPY src src/
+# Copiar mvnw e pasta .mvn
+COPY mvnw ./
+COPY .mvn .mvn
 
-# Dá permissão para o mvnw
+# Copiar pom.xml e src
+COPY pom.xml ./
+COPY src ./src
+
+# Dar permissão para mvnw
 RUN chmod +x mvnw
 
 # Build da aplicação (gera o jar em /app/target/)
 RUN ./mvnw clean package -DskipTests
 
-# ===============================
 # Etapa de runtime
-# ===============================
 FROM eclipse-temurin:21-jdk
 
 WORKDIR /app
 
-# Copia o jar da etapa de build
-COPY --from=build /app/target/app.jar .
+# Copiar jar da etapa de build
+COPY --from=build /app/target/dio-meu-primeiro-api-0.0.1-SNAPSHOT.jar app.jar
 
-# Expondo a porta do Spring Boot
+# Porta que o Spring Boot vai usar
 EXPOSE 8080
 
 # Comando para rodar a aplicação
-CMD ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java","-jar","app.jar"]
