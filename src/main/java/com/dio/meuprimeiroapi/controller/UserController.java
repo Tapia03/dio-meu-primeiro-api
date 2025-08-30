@@ -1,16 +1,20 @@
-package com.dio.meu_primeiro_api.controller;
+package com.dio.meuprimeiroapi.controller;
 
+import com.dio.meuprimeiroapi.model.User;
+import com.dio.meuprimeiroapi.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
 public class UserController {
 
-    @GetMapping
-    public List<String> getAllUsers() {
-        return List.of("Rodrigo", "Maria", "João");
+    @Autowired
+    private UserRepository userRepository;
+
+    @GetMapping("/users")
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 }
